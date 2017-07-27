@@ -85,7 +85,7 @@ open class FullScreenSlideshowViewController: UIViewController {
         slideshow.frame = view.frame
     }
 
-    func setup(placeholder: UIImage?) {
+    open func setup(placeholder: UIImage?) {
         slideshow.placeholder = placeholder
         if let inputs = inputs {
             slideshow.setImageInputs(inputs)
