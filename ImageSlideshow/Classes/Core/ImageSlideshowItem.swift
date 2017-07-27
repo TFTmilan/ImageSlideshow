@@ -18,6 +18,7 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
 
     /// Input Source for the item
     open let image: InputSource
+    private let placeholder: UIImage? = nil
 
     /// Guesture recognizer to detect double tap to zoom
     open var gestureRecognizer: UITapGestureRecognizer?
@@ -46,9 +47,10 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
         - parameter image: Input Source to load the image
         - parameter zoomEnabled: holds if it should be possible to zoom-in the image
     */
-    init(image: InputSource, zoomEnabled: Bool, activityIndicator: ActivityIndicatorView? = nil) {
+    init(image: InputSource, placeholder: UIImage?, zoomEnabled: Bool, activityIndicator: ActivityIndicatorView? = nil) {
         self.zoomEnabled = zoomEnabled
         self.image = image
+        self.placeholder = placeholder
         self.activityIndicator = activityIndicator
 
         super.init(frame: CGRect.null)
@@ -120,9 +122,12 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
             isLoading = true
             imageReleased = false
             activityIndicator?.show()
+
+            self.imageView.image = self.placeholder
+
             image.load(to: self.imageView) { image in
                 // set image to nil if there was a release request during the image load
-                self.imageView.image = self.imageReleased ? nil : image
+                self.imageView.image = self.imageReleased ? self.placeholder : image
                 self.activityIndicator?.hide()
                 self.loadFailed = image == nil
                 self.isLoading = false
@@ -226,5 +231,4 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
     open func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return zoomEnabled ? imageView : nil
     }
-
 }

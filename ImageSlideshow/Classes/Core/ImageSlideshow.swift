@@ -44,6 +44,8 @@ public enum ImagePreload {
 /// Main view containing the Image Slideshow
 open class ImageSlideshow: UIView {
 
+    open var placeholder: UIImage? = nil
+
     /// Scroll View to wrap the slideshow
     open let scrollView = UIScrollView()
 
@@ -245,7 +247,7 @@ open class ImageSlideshow: UIView {
 
         var i = 0
         for image in scrollViewImages {
-            let item = ImageSlideshowItem(image: image, zoomEnabled: self.zoomEnabled, activityIndicator: self.activityIndicator?.create())
+            let item = ImageSlideshowItem(image: image, placeholder: self.placeholder, zoomEnabled: self.zoomEnabled, activityIndicator: self.activityIndicator?.create())
             item.imageView.contentMode = self.contentScaleMode
             slideshowItems.append(item)
             scrollView.addSubview(item)
