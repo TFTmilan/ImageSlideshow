@@ -15,6 +15,8 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
     /// Input Source for the item
     open let image: InputSource
 
+    private let placeholder: UIImage
+
     /// Guesture recognizer to detect double tap to zoom
     open var gestureRecognizer: UITapGestureRecognizer?
 
@@ -34,9 +36,10 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
         - parameter image: Input Source to load the image
         - parameter zoomEnabled: holds if it should be possible to zoom-in the image
     */
-    init(image: InputSource, zoomEnabled: Bool) {
+    init(image: InputSource, placeholder: UIImage, zoomEnabled: Bool) {
         self.zoomEnabled = zoomEnabled
         self.image = image
+        self.placeholder = placeholder
 
         super.init(frame: CGRect.null)
 
@@ -95,9 +98,12 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
     func loadImage() {
         if self.imageView.image == nil {
             imageReleased = false
+
+            imageView.image = placeholder
+
             image.load(to: self.imageView) { image in
-                // set image to nil if there was a release request during the image load
-                self.imageView.image = self.imageReleased ? nil : image
+                // set image to placeholder if there was a release request during the image load
+                self.imageView.image = self.imageReleased ? placeholder : image
             }
         }
     }
