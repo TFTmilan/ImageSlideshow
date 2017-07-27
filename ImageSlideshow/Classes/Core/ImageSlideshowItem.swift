@@ -18,7 +18,7 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
 
     /// Input Source for the item
     open let image: InputSource
-    private let placeholder: UIImage? = nil
+    private var placeholder: UIImage? = nil
 
     /// Guesture recognizer to detect double tap to zoom
     open var gestureRecognizer: UITapGestureRecognizer?
