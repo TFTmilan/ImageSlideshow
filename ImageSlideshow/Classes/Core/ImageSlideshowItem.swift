@@ -10,12 +10,14 @@ import UIKit
 /// Used to wrap a single slideshow item and allow zooming on it
 open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
 
+    /// Image view to hold the image
     open let imageView = UIImageView()
+
+    /// Activity indicator shown during image loading, when nil there won't be shown any
+    open let activityIndicator: ActivityIndicatorView?
 
     /// Input Source for the item
     open let image: InputSource
-
-    private let placeholder: UIImage
 
     /// Guesture recognizer to detect double tap to zoom
     open var gestureRecognizer: UITapGestureRecognizer?
@@ -28,18 +30,25 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
 
     fileprivate var lastFrame = CGRect.zero
     fileprivate var imageReleased = false
+    fileprivate var isLoading = false
+    fileprivate var singleTapGestureRecognizer: UITapGestureRecognizer?
+    fileprivate var loadFailed = false {
+        didSet {
+            singleTapGestureRecognizer?.isEnabled = loadFailed
+            gestureRecognizer?.isEnabled = !loadFailed
+        }
+    }
 
     // MARK: - Life cycle
-
     /**
-        Initializes a new ImageSlideshowItem
-        - parameter image: Input Source to load the image
-        - parameter zoomEnabled: holds if it should be possible to zoom-in the image
-    */
-    init(image: InputSource, placeholder: UIImage, zoomEnabled: Bool) {
+     Initializes a new ImageSlideshowItem
+     - parameter image: Input Source to load the image
+     - parameter zoomEnabled: holds if it should be possible to zoom-in the image
+     */
+    init(image: InputSource, zoomEnabled: Bool, activityIndicator: ActivityIndicatorView? = nil) {
         self.zoomEnabled = zoomEnabled
         self.image = image
-        self.placeholder = placeholder
+        self.activityIndicator = activityIndicator
 
         super.init(frame: CGRect.null)
 
@@ -56,11 +65,20 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
         minimumZoomScale = 1.0
         maximumZoomScale = calculateMaximumScale()
 
+        if let activityIndicator = activityIndicator {
+            addSubview(activityIndicator.view)
+        }
+
         // tap gesture recognizer
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(ImageSlideshowItem.tapZoom))
         tapRecognizer.numberOfTapsRequired = 2
         imageView.addGestureRecognizer(tapRecognizer)
         gestureRecognizer = tapRecognizer
+
+        singleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(retryLoadImage))
+        singleTapGestureRecognizer!.numberOfTapsRequired = 1
+        singleTapGestureRecognizer!.isEnabled = false
+        imageView.addGestureRecognizer(singleTapGestureRecognizer!)
     }
 
     required public init?(coder aDecoder: NSCoder) {
@@ -74,7 +92,6 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
             imageView.frame.size = frame.size
         } else if !isZoomed() {
             imageView.frame.size = calculatePictureSize()
-            setPictoCenter()
         }
 
         if isFullScreen() {
@@ -82,6 +99,8 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
         } else {
             setPictoCenter()
         }
+
+        self.activityIndicator?.view.center = imageView.center
 
         // if self.frame was changed and zoomInInitially enabled, zoom in
         if lastFrame != frame && zoomInInitially {
@@ -96,14 +115,16 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
 
     /// Request to load Image Source to Image View
     func loadImage() {
-        if self.imageView.image == nil {
+        if self.imageView.image == nil && !isLoading {
+            isLoading = true
             imageReleased = false
-
-            imageView.image = placeholder
-
+            activityIndicator?.show()
             image.load(to: self.imageView) { image in
-                // set image to placeholder if there was a release request during the image load
-                self.imageView.image = self.imageReleased ? placeholder : image
+                // set image to nil if there was a release request during the image load
+                self.imageView.image = self.imageReleased ? nil : image
+                self.activityIndicator?.hide()
+                self.loadFailed = image == nil
+                self.isLoading = false
             }
         }
     }
@@ -113,8 +134,11 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
         self.imageView.image = nil
     }
 
-    // MARK: - Image zoom & size
+    func retryLoadImage() {
+        self.loadImage()
+    }
 
+    // MARK: - Image zoom & size
     func isZoomed() -> Bool {
         return self.zoomScale != self.minimumZoomScale
     }
@@ -155,7 +179,7 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
     }
 
     fileprivate func calculatePictureSize() -> CGSize {
-        if let image = imageView.image {
+        if let image = imageView.image, imageView.contentMode == .scaleAspectFit {
             let picSize = image.size
             let picRatio = picSize.width / picSize.height
             let screenRatio = screenSize().width / screenSize().height
@@ -192,13 +216,12 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
     }
 
     // MARK: UIScrollViewDelegate
-
     open func scrollViewDidZoom(_ scrollView: UIScrollView) {
         setPictoCenter()
     }
-
+    
     open func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return zoomEnabled ? imageView : nil
     }
-
+    
 }

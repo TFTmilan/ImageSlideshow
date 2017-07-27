@@ -21,7 +21,7 @@ open class FullScreenSlideshowViewController: UIViewController {
         return slideshow
     }()
 
-    /// Close button 
+    /// Close button
     open var closeButton = UIButton()
 
     /// Closure called on page selection
@@ -30,7 +30,7 @@ open class FullScreenSlideshowViewController: UIViewController {
     /// Index of initial image
     open var initialPage: Int = 0
 
-    /// Input sources to 
+    /// Input sources to
     open var inputs: [InputSource]?
 
     /// Background color
@@ -90,7 +90,7 @@ open class FullScreenSlideshowViewController: UIViewController {
         if let pageSelected = pageSelected {
             pageSelected(slideshow.currentPage)
         }
-
+        
         dismiss(animated: true, completion: nil)
     }
 }
