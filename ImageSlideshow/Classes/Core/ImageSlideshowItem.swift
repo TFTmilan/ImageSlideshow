@@ -40,11 +40,12 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
     }
 
     // MARK: - Life cycle
+
     /**
-     Initializes a new ImageSlideshowItem
-     - parameter image: Input Source to load the image
-     - parameter zoomEnabled: holds if it should be possible to zoom-in the image
-     */
+        Initializes a new ImageSlideshowItem
+        - parameter image: Input Source to load the image
+        - parameter zoomEnabled: holds if it should be possible to zoom-in the image
+    */
     init(image: InputSource, zoomEnabled: Bool, activityIndicator: ActivityIndicatorView? = nil) {
         self.zoomEnabled = zoomEnabled
         self.image = image
@@ -139,6 +140,7 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
     }
 
     // MARK: - Image zoom & size
+
     func isZoomed() -> Bool {
         return self.zoomScale != self.minimumZoomScale
     }
@@ -216,12 +218,13 @@ open class ImageSlideshowItem: UIScrollView, UIScrollViewDelegate {
     }
 
     // MARK: UIScrollViewDelegate
+
     open func scrollViewDidZoom(_ scrollView: UIScrollView) {
         setPictoCenter()
     }
-    
+
     open func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return zoomEnabled ? imageView : nil
     }
-    
+
 }

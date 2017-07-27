@@ -25,9 +25,9 @@ open class ZoomAnimatedTransitioningDelegate: NSObject, UIViewControllerTransiti
     open var slideToDismissEnabled: Bool = true
 
     /**
-     Init the transitioning delegate with a source ImageSlideshow
-     - parameter slideshowView: ImageSlideshow instance to animate the transition from
-     - parameter slideshowController: FullScreenViewController instance to animate the transition to
+        Init the transitioning delegate with a source ImageSlideshow
+        - parameter slideshowView: ImageSlideshow instance to animate the transition from
+        - parameter slideshowController: FullScreenViewController instance to animate the transition to
      */
     public init(slideshowView: ImageSlideshow, slideshowController: FullScreenSlideshowViewController) {
         self.referenceSlideshowView = slideshowView
@@ -39,9 +39,9 @@ open class ZoomAnimatedTransitioningDelegate: NSObject, UIViewControllerTransiti
     }
 
     /**
-     Init the transitioning delegate with a source ImageView
-     - parameter imageView: UIImageView instance to animate the transition from
-     - parameter slideshowController: FullScreenViewController instance to animate the transition to
+        Init the transitioning delegate with a source ImageView
+        - parameter imageView: UIImageView instance to animate the transition from
+        - parameter slideshowController: FullScreenViewController instance to animate the transition to
      */
     public init(imageView: UIImageView, slideshowController: FullScreenSlideshowViewController) {
         self.referenceImageView = imageView
@@ -320,7 +320,7 @@ extension ZoomOutAnimator: UIViewControllerAnimatedTransitioning {
             transitionContext.completeTransition(completed)
         }
 
-        // Working around iOS 10 bug in UIView.animate causing a glitch in interrupted interactive transition
+        // Working around iOS 10 bug in UIView.animate causing a glitch in interrupted interactive transition 
         if #available(iOS 10.0, *) {
             UIViewPropertyAnimator.runningPropertyAnimator(withDuration: duration, delay: 0, options: UIViewAnimationOptions(), animations: animations, completion: completion)
         } else {

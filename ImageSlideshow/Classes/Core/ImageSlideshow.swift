@@ -7,12 +7,12 @@
 
 import UIKit
 
-/**
- Used to represent position of the Page Control
- - hidden: Page Control is hidden
- - insideScrollView: Page Control is inside image slideshow
- - underScrollView: Page Control is under image slideshow
- - custom: Custom vertical padding, relative to "insideScrollView" position
+/** 
+    Used to represent position of the Page Control
+    - hidden: Page Control is hidden
+    - insideScrollView: Page Control is inside image slideshow
+    - underScrollView: Page Control is under image slideshow
+    - custom: Custom vertical padding, relative to "insideScrollView" position
  */
 public enum PageControlPosition {
     case hidden
@@ -58,6 +58,7 @@ open class ImageSlideshow: UIView {
     }
 
     // MARK: - State properties
+
     /// Page control position
     open var pageControlPosition = PageControlPosition.insideScrollView {
         didSet {
@@ -104,6 +105,7 @@ open class ImageSlideshow: UIView {
     open fileprivate(set) var slideshowItems = [ImageSlideshowItem]()
 
     // MARK: - Preferences
+
     /// Enables/disables infinite scrolling between images
     open var circular = true {
         didSet {
@@ -155,6 +157,7 @@ open class ImageSlideshow: UIView {
     open fileprivate(set) var slideshowTransitioningDelegate: ZoomAnimatedTransitioningDelegate?
 
     // MARK: - Life cycle
+
     override public init(frame: CGRect) {
         super.init(frame: frame)
         initialize()
@@ -279,6 +282,7 @@ open class ImageSlideshow: UIView {
     }
 
     // MARK: - Image setting
+
     /**
      Set image inputs into the image slideshow
      - parameter inputs: Array of InputSource instances.
@@ -311,6 +315,7 @@ open class ImageSlideshow: UIView {
     }
 
     // MARK: paging methods
+
     /**
      Change the current page
      - parameter newPage: new page
