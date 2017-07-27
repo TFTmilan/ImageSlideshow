@@ -85,13 +85,6 @@ open class FullScreenSlideshowViewController: UIViewController {
         slideshow.frame = view.frame
     }
 
-    open func setup(placeholder: UIImage?) {
-        slideshow.placeholder = placeholder
-        if let inputs = inputs {
-            slideshow.setImageInputs(inputs)
-        }
-    }
-
     func close() {
         // if pageSelected closure set, send call it with current page
         if let pageSelected = pageSelected {

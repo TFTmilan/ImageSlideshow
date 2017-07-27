@@ -44,7 +44,14 @@ public enum ImagePreload {
 /// Main view containing the Image Slideshow
 open class ImageSlideshow: UIView {
 
-    open var placeholder: UIImage? = nil
+    open var placeholder: UIImage? = nil {
+        didSet {
+            reloadScrollView()
+            layoutScrollView()
+            layoutPageControl()
+            setTimerIfNeeded()
+        }
+    }
 
     /// Scroll View to wrap the slideshow
     open let scrollView = UIScrollView()
